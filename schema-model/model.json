@@ -1,0 +1,8 @@
+{
+  "database-engine": "databricks",
+  "database-properties": {
+    "database-version": "2026.20",
+    "database-flavor": "sql-warehouse"
+  },
+  "model-format": "rgmf"
+}

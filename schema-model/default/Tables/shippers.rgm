@@ -1,0 +1,27 @@
+table "default"."shippers" {
+  primaryKey = {
+    columns = <
+      {
+        name = shipper_id
+      }
+
+    >
+    name = "shippers_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "shipper_id" {
+      type = bigint
+      notNull = NOT NULL
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "shipper_name" {
+      type = string
+      notNull = NOT NULL
+    }
+    column "phone" {
+      type = string
+    }
+  )
+}
+

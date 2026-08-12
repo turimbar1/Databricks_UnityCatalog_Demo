@@ -1,0 +1,5 @@
+schema "default" {
+  comment = Default schema (auto-created)
+  owner = _workspace_admins_demo_dev_7405611424302232
+}
+

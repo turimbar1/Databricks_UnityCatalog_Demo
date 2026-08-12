@@ -1,0 +1,66 @@
+table "default"."products" {
+  primaryKey = {
+    columns = <
+      {
+        name = product_id
+      }
+
+    >
+    name = "products_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "product_id" {
+      type = bigint
+      notNull = NOT NULL
+      comment = Unique identifier assigned to each product in the inventory, used to reference and manage products.
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "product_name" {
+      type = string
+      notNull = NOT NULL
+      comment = Name of the product as it appears for sale or in the catalog, useful for identification and display purposes.
+    }
+    column "supplier_id" {
+      type = bigint
+      comment = Identifier linking the product to its supplier, allowing tracking of product sources and managing supplier relationships.
+    }
+    column "category_id" {
+      type = bigint
+      comment = Identifier that associates the product with a specific category, helping to organize products into groups for easier navigation and analysis.
+    }
+    column "quantity_per_unit" {
+      type = string
+      comment = Description of the amount or packaging size of the product, indicating how the product is quantified or sold (e.g., '24 - 12 oz bottles').
+    }
+    column "unit_price" {
+      type = decimal(10,2)
+      comment = The selling price per unit of the product, essential for pricing, billing, and sales calculations.
+    }
+    column "units_in_stock" {
+      type = int
+      comment = Current quantity of the product available in inventory, used to monitor stock levels and manage replenishment needs.
+    }
+  )
+}
+
+foreignKey "default"."products"."products_categories_fk" {
+  referencedTable = "default"."categories"
+  columns = [
+    category_id
+  ]
+  referencedColumns = [
+    category_id
+  ]
+}
+
+foreignKey "default"."products"."products_suppliers_fk" {
+  referencedTable = "default"."suppliers"
+  columns = [
+    supplier_id
+  ]
+  referencedColumns = [
+    supplier_id
+  ]
+}
+

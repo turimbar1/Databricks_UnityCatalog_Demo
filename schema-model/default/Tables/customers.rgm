@@ -1,0 +1,43 @@
+table "default"."customers" {
+  primaryKey = {
+    columns = <
+      {
+        name = customer_id
+      }
+
+    >
+    name = "customers_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "customer_id" {
+      type = bigint
+      notNull = NOT NULL
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "customer_name" {
+      type = string
+      notNull = NOT NULL
+    }
+    column "contact_name" {
+      type = string
+    }
+    column "address" {
+      type = string
+    }
+    column "region_id" {
+      type = bigint
+    }
+  )
+}
+
+foreignKey "default"."customers"."customers_regions_fk" {
+  referencedTable = "default"."regions"
+  columns = [
+    region_id
+  ]
+  referencedColumns = [
+    region_id
+  ]
+}
+

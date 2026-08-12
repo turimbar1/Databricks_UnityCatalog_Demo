@@ -1,0 +1,27 @@
+databaseType = "Databricks"
+id = "a293a9c3-ff88-4437-96f0-1efef8ced43d"
+name = "Databricks_UnityCatalog_Demo"
+
+[flyway]
+callbackLocations = [ "filesystem:callbacks" ]
+locations = [ "filesystem:migrations" ]
+mixed = true
+outOfOrder = true
+schemaModelLocation = "schema-model"
+validateMigrationNaming = true
+baselineVersion = "001_20260811144649"
+baselineOnMigrate = true
+
+[flywayDesktop]
+enableMigrations = true
+developmentEnvironment = "development"
+shadowEnvironment = "shadow"
+
+  [flywayDesktop.generate]
+  undoScripts = true
+
+[redgateCompare]
+filterFile = "filter.rgf"
+
+[environments.Dev2]
+url = "jdbc:databricks://adb-7405611424302232.12.azuredatabricks.net:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/353a9a5f7ad7299f;ConnCatalog=demo_dev"

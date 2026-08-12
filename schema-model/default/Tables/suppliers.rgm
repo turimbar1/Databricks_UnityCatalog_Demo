@@ -1,0 +1,43 @@
+table "default"."suppliers" {
+  primaryKey = {
+    columns = <
+      {
+        name = supplier_id
+      }
+
+    >
+    name = "suppliers_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "supplier_id" {
+      type = bigint
+      notNull = NOT NULL
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "supplier_name" {
+      type = string
+      notNull = NOT NULL
+    }
+    column "contact_name" {
+      type = string
+    }
+    column "address" {
+      type = string
+    }
+    column "region_id" {
+      type = bigint
+    }
+  )
+}
+
+foreignKey "default"."suppliers"."suppliers_regions_fk" {
+  referencedTable = "default"."regions"
+  columns = [
+    region_id
+  ]
+  referencedColumns = [
+    region_id
+  ]
+}
+

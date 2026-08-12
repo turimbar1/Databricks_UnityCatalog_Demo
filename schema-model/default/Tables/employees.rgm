@@ -1,0 +1,44 @@
+table "default"."employees" {
+  primaryKey = {
+    columns = <
+      {
+        name = employee_id
+      }
+
+    >
+    name = "employees_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "employee_id" {
+      type = bigint
+      notNull = NOT NULL
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "first_name" {
+      type = string
+      notNull = NOT NULL
+    }
+    column "last_name" {
+      type = string
+      notNull = NOT NULL
+    }
+    column "title" {
+      type = string
+    }
+    column "region_id" {
+      type = bigint
+    }
+  )
+}
+
+foreignKey "default"."employees"."employees_regions_fk" {
+  referencedTable = "default"."regions"
+  columns = [
+    region_id
+  ]
+  referencedColumns = [
+    region_id
+  ]
+}
+

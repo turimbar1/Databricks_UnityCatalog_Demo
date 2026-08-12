@@ -1,0 +1,27 @@
+table "default"."categories" {
+  primaryKey = {
+    columns = <
+      {
+        name = category_id
+      }
+
+    >
+    name = "categories_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "category_id" {
+      type = bigint
+      notNull = NOT NULL
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "category_name" {
+      type = string
+      notNull = NOT NULL
+    }
+    column "description" {
+      type = string
+    }
+  )
+}
+
