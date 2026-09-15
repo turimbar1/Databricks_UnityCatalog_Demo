@@ -29,3 +29,7 @@ url = "jdbc:databricks://adb-7405611424302232.12.azuredatabricks.net:443/default
 [environments.prod]
 url = "jdbc:databricks://adb-7405611424302232.12.azuredatabricks.net:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/353a9a5f7ad7299f;ConnCatalog=demo_prod"
 displayName = "Prod Demo"
+
+[environments.Shadow]
+url = "jdbc:databricks://adb-7405611424302232.12.azuredatabricks.net:443/default;httpPath=/sql/1.0/warehouses/353a9a5f7ad7299f;ConnCatalog=rene_shadow;AuthMech=3;SSL=1"
+displayName = "Shadow"

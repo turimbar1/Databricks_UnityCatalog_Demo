@@ -25,6 +25,12 @@ table "default"."categories" {
     column "category_type" {
       type = string
     }
+    column "category_type_description" {
+      type = string
+    }
+    column "foo" {
+      type = string
+    }
   )
 }
 
