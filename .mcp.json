@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "flyway": {
+      "type": "stdio",
+      "command": "C:\\Program Files\\Red Gate\\Flyway Desktop\\flyway.cmd",
+      "args": [
+        "mcp",
+        "-mcp.toolsets=develop_migrations"
+      ]
+    }
+  }
+}

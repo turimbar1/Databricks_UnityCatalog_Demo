@@ -1,0 +1,86 @@
+{
+  "$schema" : "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/main/sarif-2.1/schema/sarif-schema-2.1.0.json",
+  "version" : "2.1.0",
+  "runs" : [ {
+    "tool" : {
+      "driver" : {
+        "name" : "Redgate Flyway Code Review",
+        "version" : "13.2.1-rc2585",
+        "informationUri" : "https://help.red-gate.com/help/flyway-cli13/help_2.aspx?topic=check-code",
+        "rules" : [ {
+          "id" : "AM05",
+          "shortDescription" : {
+            "text" : "Join clauses should be fully qualified."
+          },
+          "helpUri" : "https://help.red-gate.com/help/flyway-cli13/help_2.aspx?topic=rules/AM05"
+        } ]
+      }
+    },
+    "results" : [ {
+      "ruleId" : "AM05",
+      "level" : "error",
+      "message" : {
+        "text" : "Join clauses should be fully qualified."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "migrations/V002_20260812151537__Create_orders_table_with_foreign_keys_and_recent_orders_view.sql",
+            "uriBaseId" : "%SRCROOT%"
+          },
+          "region" : {
+            "startLine" : 20,
+            "startColumn" : 1,
+            "endLine" : 20,
+            "endColumn" : 5
+          }
+        }
+      } ]
+    }, {
+      "ruleId" : "AM05",
+      "level" : "error",
+      "message" : {
+        "text" : "Join clauses should be fully qualified."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "migrations/V002_20260812151537__Create_orders_table_with_foreign_keys_and_recent_orders_view.sql",
+            "uriBaseId" : "%SRCROOT%"
+          },
+          "region" : {
+            "startLine" : 21,
+            "startColumn" : 1,
+            "endLine" : 21,
+            "endColumn" : 5
+          }
+        }
+      } ]
+    }, {
+      "ruleId" : "AM05",
+      "level" : "error",
+      "message" : {
+        "text" : "Join clauses should be fully qualified."
+      },
+      "locations" : [ {
+        "physicalLocation" : {
+          "artifactLocation" : {
+            "uri" : "migrations/V002_20260812151537__Create_orders_table_with_foreign_keys_and_recent_orders_view.sql",
+            "uriBaseId" : "%SRCROOT%"
+          },
+          "region" : {
+            "startLine" : 22,
+            "startColumn" : 1,
+            "endLine" : 22,
+            "endColumn" : 5
+          }
+        }
+      } ]
+    } ],
+    "originalUriBaseIds" : {
+      "%SRCROOT%" : {
+        "uri" : "file:///C:/Repos/Databricks_UnityCatalog_Demo/"
+      }
+    }
+  } ]
+}

@@ -1,0 +1,68 @@
+table "default"."orders" {
+  primaryKey = {
+    columns = <
+      {
+        name = order_id
+      }
+
+    >
+    name = "orders_pk"
+    objectType = primaryKey
+  }
+  columns = (
+    column "order_id" {
+      type = bigint
+      notNull = NOT NULL
+      generatedAs = ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1)
+    }
+    column "customer_id" {
+      type = bigint
+    }
+    column "employee_id" {
+      type = bigint
+    }
+    column "shipper_id" {
+      type = bigint
+    }
+    column "order_date" {
+      type = date
+    }
+    column "required_date" {
+      type = date
+    }
+    column "shipped_date" {
+      type = date
+    }
+  )
+}
+
+foreignKey "default"."orders"."orders_customers_fk" {
+  referencedTable = "default"."customers"
+  columns = [
+    customer_id
+  ]
+  referencedColumns = [
+    customer_id
+  ]
+}
+
+foreignKey "default"."orders"."orders_employees_fk" {
+  referencedTable = "default"."employees"
+  columns = [
+    employee_id
+  ]
+  referencedColumns = [
+    employee_id
+  ]
+}
+
+foreignKey "default"."orders"."orders_shippers_fk" {
+  referencedTable = "default"."shippers"
+  columns = [
+    shipper_id
+  ]
+  referencedColumns = [
+    shipper_id
+  ]
+}
+
