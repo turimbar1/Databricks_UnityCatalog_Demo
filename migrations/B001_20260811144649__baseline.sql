@@ -94,48 +94,61 @@ CREATE TABLE `default`.`customers` (
 -- deployment: Creating default.customers.customers_regions_fk...
 ALTER TABLE `default`.`customers` ADD CONSTRAINT `customers_regions_fk` FOREIGN KEY (`region_id`) REFERENCES `default`.`regions` (`region_id`);
 
+-- =====================================================================
+-- Seed data
+-- Identity columns don't promise which row gets which id, so child rows
+-- look up their parents by name rather than hard-coding 1, 2, 3.
+-- =====================================================================
 
--- Insert sample data into regions
-INSERT INTO regions (region_name) VALUES
+INSERT INTO `default`.`regions` (`region_name`) VALUES
 ('North America'),
 ('Europe'),
 ('Asia');
 
--- Insert sample data into categories
-INSERT INTO categories (category_name, description) VALUES
+INSERT INTO `default`.`categories` (`category_name`, `description`) VALUES
 ('Beverages', 'Soft drinks, coffees, teas, beers, and ales'),
 ('Condiments', 'Sweet and savory sauces, relishes, spreads, and seasonings'),
 ('Produce', 'Dried fruit and bean curd');
 
--- Insert sample data into suppliers
-INSERT INTO suppliers (supplier_name, contact_name, address, region_id) VALUES
-('Exotic Liquids', 'Charlotte Cooper', '49 Gilbert St.', 1),
-('Grandma Kellys Homestead', 'Regina Murphy', '707 Oxford Rd.', 2),
-('Tokyo Traders', 'Yoshi Nagase', '9-8 Sekimai Musashino-shi', 3);
-
--- Insert sample data into shippers
-INSERT INTO shippers (shipper_name, phone) VALUES
+INSERT INTO `default`.`shippers` (`shipper_name`, `phone`) VALUES
 ('Speedy Express', '+1-555-0101'),
 ('United Package', '+1-555-0102'),
 ('Federal Shipping', '+1-555-0103');
 
--- Insert sample data into employees
-INSERT INTO employees (first_name, last_name, title, region_id) VALUES
-('Nancy', 'Davolio', 'Sales Representative', 1),
-('Andrew', 'Fuller', 'Vice President, Sales', 2),
-('Janet', 'Leverling', 'Sales Representative', 3);
+INSERT INTO `default`.`suppliers` (`supplier_name`, `contact_name`, `address`, `region_id`)
+SELECT s.supplier_name, s.contact_name, s.address, r.region_id
+FROM VALUES
+  ('Exotic Liquids', 'Charlotte Cooper', '49 Gilbert St.', 'North America'),
+  ('Grandma Kellys Homestead', 'Regina Murphy', '707 Oxford Rd.', 'Europe'),
+  ('Tokyo Traders', 'Yoshi Nagase', '9-8 Sekimai Musashino-shi', 'Asia')
+  AS s(supplier_name, contact_name, address, region_name)
+INNER JOIN `default`.`regions` r ON r.region_name = s.region_name;
 
--- Insert sample data into customers
-INSERT INTO customers (customer_name, contact_name, address, region_id) VALUES
-('Alfreds Futterkiste', 'Maria Anders', 'Obere Str. 57', 2),
-('Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Avda. de la Constitución 2222', 3),
-('Antonio Moreno Taquería', 'Antonio Moreno', 'Mataderos 2312', 1);
+INSERT INTO `default`.`employees` (`first_name`, `last_name`, `title`, `region_id`)
+SELECT e.first_name, e.last_name, e.title, r.region_id
+FROM VALUES
+  ('Nancy', 'Davolio', 'Sales Representative', 'North America'),
+  ('Andrew', 'Fuller', 'Vice President, Sales', 'Europe'),
+  ('Janet', 'Leverling', 'Sales Representative', 'Asia')
+  AS e(first_name, last_name, title, region_name)
+INNER JOIN `default`.`regions` r ON r.region_name = e.region_name;
 
--- Insert sample data into products
-INSERT INTO products (product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock) VALUES
-('Chai', 1, 1, '10 boxes x 20 bags', 18.00, 39),
-('Chang', 1, 1, '24 - 12 oz bottles', 19.00, 17),
-('Aniseed Syrup', 2, 2, '12 - 550 ml bottles', 10.00, 13),
-('Tofu', 3, 3, '40 - 100 g pkgs.', 23.25, 35);
- 
- 
+INSERT INTO `default`.`customers` (`customer_name`, `contact_name`, `address`, `region_id`)
+SELECT c.customer_name, c.contact_name, c.address, r.region_id
+FROM VALUES
+  ('Alfreds Futterkiste', 'Maria Anders', 'Obere Str. 57', 'Europe'),
+  ('Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Avda. de la Constitución 2222', 'Asia'),
+  ('Antonio Moreno Taquería', 'Antonio Moreno', 'Mataderos 2312', 'North America')
+  AS c(customer_name, contact_name, address, region_name)
+INNER JOIN `default`.`regions` r ON r.region_name = c.region_name;
+
+INSERT INTO `default`.`products` (`product_name`, `supplier_id`, `category_id`, `quantity_per_unit`, `unit_price`, `units_in_stock`)
+SELECT p.product_name, s.supplier_id, c.category_id, p.quantity_per_unit, p.unit_price, p.units_in_stock
+FROM VALUES
+  ('Chai', 'Exotic Liquids', 'Beverages', '10 boxes x 20 bags', CAST(18.00 AS DECIMAL(10,2)), 39),
+  ('Chang', 'Exotic Liquids', 'Beverages', '24 - 12 oz bottles', CAST(19.00 AS DECIMAL(10,2)), 17),
+  ('Aniseed Syrup', 'Grandma Kellys Homestead', 'Condiments', '12 - 550 ml bottles', CAST(10.00 AS DECIMAL(10,2)), 13),
+  ('Tofu', 'Tokyo Traders', 'Produce', '40 - 100 g pkgs.', CAST(23.25 AS DECIMAL(10,2)), 35)
+  AS p(product_name, supplier_name, category_name, quantity_per_unit, unit_price, units_in_stock)
+INNER JOIN `default`.`suppliers` s ON s.supplier_name = p.supplier_name
+INNER JOIN `default`.`categories` c ON c.category_name = p.category_name;

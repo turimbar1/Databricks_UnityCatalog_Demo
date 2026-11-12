@@ -45,17 +45,39 @@ jobs:
             | tar xz -C "$RUNNER_TEMP"
           echo "$RUNNER_TEMP/flyway-$FLYWAY_VERSION" >> "$GITHUB_PATH"
 
-      # flyway.user.toml is gitignored; in CI it only carries the prod credentials (PAT via AuthMech=3).
-      - name: Prod credentials for Flyway
+      # The committed prod environment signs in through a browser (OAuth U2M), which can't work in CI.
+      # On the runner only, swap its connection for a PAT (AuthMech=3) against the same catalog. The environment
+      # keeps the name "prod" so V002's shouldExecute=${flyway:environment}==prod still runs it.
+      - name: Token sign-in for prod (runner only)
         run: |
-          cat > flyway.user.toml <<'EOF'
-          [environments.prod]
-          user = "token"
-          password = "${env.DATABRICKS_TOKEN}"
-          EOF
+          python - <<'PY'
+          import re
+          from pathlib import Path
+          p = Path("flyway.toml")
+          lines = p.read_text(encoding="utf-8").splitlines()
+          out, skip = [], False
+          for line in lines:
+              m = re.match(r"^\s*\[([^\]]+)\]\s*$", line)
+              if m:
+                  name = m.group(1).strip()
+                  skip = name == "environments.prod" or name.startswith("environments.prod.")
+              if not skip:
+                  out.append(line)
+          out += [
+              "",
+              "[environments.prod]",
+              'url = "jdbc:databricks://adb-7405611424302232.12.azuredatabricks.net:443/default;transportMode=http;ssl=1;AuthMech=3;httpPath=/sql/1.0/warehouses/353a9a5f7ad7299f;ConnCatalog=demo_prod"',
+              'user = "token"',
+              'password = "${env.DATABRICKS_TOKEN}"',
+          ]
+          p.write_text("\n".join(out) + "\n", encoding="utf-8")
+          PY
+          grep -A3 '^\[environments.prod\]' flyway.toml | sed 's/password = .*/password = <from secret>/'
 
       - name: Reset prod and add drift
-        run: python demo-drift/prod_drift.py "${{ inputs.mode || 'reset' }}" --yes
+        env:
+          MODE: ${{ inputs.mode || 'reset' }}
+        run: python demo-drift/prod_drift.py "$MODE" --yes
 
       - uses: actions/upload-artifact@v4
         if: always()

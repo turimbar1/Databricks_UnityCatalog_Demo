@@ -33,7 +33,7 @@ databricks auth login --host https://adb-7405611424302232.12.azuredatabricks.net
 
 You also need the Flyway CLI (Enterprise) on PATH. It uses the prod credentials already in your `flyway.user.toml`.
 
-For the nightly GitHub Action, add these repo secrets:
+The committed `prod` environment signs in through a browser, which can't work in CI. So on the runner only, the GitHub Action swaps `prod` to token sign-in against the same catalog, keeping the name `prod` so V002's `.conf` condition still matches. For that, add these repo secrets:
 
 | Secret | Value |
 |---|---|
