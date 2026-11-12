@@ -1,0 +1,65 @@
+# Rebuilds demo_prod from master every night and puts the demo drift back,
+# so the drift report always has something to show. Also runnable on demand before a call.
+name: prod-drift-reset
+
+on:
+  schedule:
+    - cron: "23 1 * * 1-5"   # 01:23 UTC, weekdays
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "reset = rebuild prod + drift; inject = snapshot current prod + drift"
+        type: choice
+        options: [reset, inject]
+        default: reset
+
+concurrency:
+  group: demo-prod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    env:
+      FLYWAY_VERSION: "12.0.1"
+      FLYWAY_EMAIL: ${{ secrets.FLYWAY_EMAIL }}
+      FLYWAY_TOKEN: ${{ secrets.FLYWAY_TOKEN }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install --quiet "databricks-sdk>=0.40,<1"
+
+      - name: Install Flyway CLI
+        run: |
+          curl -fsSL "https://download.red-gate.com/maven/release/com/redgate/flyway/flyway-commandline/$FLYWAY_VERSION/flyway-commandline-$FLYWAY_VERSION-linux-x64.tar.gz" \
+            | tar xz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/flyway-$FLYWAY_VERSION" >> "$GITHUB_PATH"
+
+      # flyway.user.toml is gitignored; in CI it only carries the prod credentials (PAT via AuthMech=3).
+      - name: Prod credentials for Flyway
+        run: |
+          cat > flyway.user.toml <<'EOF'
+          [environments.prod]
+          user = "token"
+          password = "${env.DATABRICKS_TOKEN}"
+          EOF
+
+      - name: Reset prod and add drift
+        run: python demo-drift/prod_drift.py "${{ inputs.mode || 'reset' }}" --yes
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prod-drift-report
+          path: demo-drift/reports/
+          if-no-files-found: ignore

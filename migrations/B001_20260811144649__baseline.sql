@@ -94,3 +94,48 @@ CREATE TABLE `default`.`customers` (
 -- deployment: Creating default.customers.customers_regions_fk...
 ALTER TABLE `default`.`customers` ADD CONSTRAINT `customers_regions_fk` FOREIGN KEY (`region_id`) REFERENCES `default`.`regions` (`region_id`);
 
+
+-- Insert sample data into regions
+INSERT INTO regions (region_name) VALUES
+('North America'),
+('Europe'),
+('Asia');
+
+-- Insert sample data into categories
+INSERT INTO categories (category_name, description) VALUES
+('Beverages', 'Soft drinks, coffees, teas, beers, and ales'),
+('Condiments', 'Sweet and savory sauces, relishes, spreads, and seasonings'),
+('Produce', 'Dried fruit and bean curd');
+
+-- Insert sample data into suppliers
+INSERT INTO suppliers (supplier_name, contact_name, address, region_id) VALUES
+('Exotic Liquids', 'Charlotte Cooper', '49 Gilbert St.', 1),
+('Grandma Kellys Homestead', 'Regina Murphy', '707 Oxford Rd.', 2),
+('Tokyo Traders', 'Yoshi Nagase', '9-8 Sekimai Musashino-shi', 3);
+
+-- Insert sample data into shippers
+INSERT INTO shippers (shipper_name, phone) VALUES
+('Speedy Express', '+1-555-0101'),
+('United Package', '+1-555-0102'),
+('Federal Shipping', '+1-555-0103');
+
+-- Insert sample data into employees
+INSERT INTO employees (first_name, last_name, title, region_id) VALUES
+('Nancy', 'Davolio', 'Sales Representative', 1),
+('Andrew', 'Fuller', 'Vice President, Sales', 2),
+('Janet', 'Leverling', 'Sales Representative', 3);
+
+-- Insert sample data into customers
+INSERT INTO customers (customer_name, contact_name, address, region_id) VALUES
+('Alfreds Futterkiste', 'Maria Anders', 'Obere Str. 57', 2),
+('Ana Trujillo Emparedados y helados', 'Ana Trujillo', 'Avda. de la Constitución 2222', 3),
+('Antonio Moreno Taquería', 'Antonio Moreno', 'Mataderos 2312', 1);
+
+-- Insert sample data into products
+INSERT INTO products (product_name, supplier_id, category_id, quantity_per_unit, unit_price, units_in_stock) VALUES
+('Chai', 1, 1, '10 boxes x 20 bags', 18.00, 39),
+('Chang', 1, 1, '24 - 12 oz bottles', 19.00, 17),
+('Aniseed Syrup', 2, 2, '12 - 550 ml bottles', 10.00, 13),
+('Tofu', 3, 3, '40 - 100 g pkgs.', 23.25, 35);
+ 
+ 
