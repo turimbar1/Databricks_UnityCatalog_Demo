@@ -8,7 +8,7 @@ A Flyway Enterprise project for demoing database DevOps on Databricks Unity Cata
 |---|---|
 | `flyway.toml` | Project config. Environments `prod` (catalog `demo_prod`) and `Dev2` (`demo_dev`). Your `development` and `shadow` environments live in your own `flyway.user.toml`. |
 | `schema-model/` | The schema model: 8 tables and 1 view in `default` |
-| `migrations/` | `B001` baseline (tables plus seed data), `V002` orders and `recent_orders` (prod only, see its `.conf`), `V003` `category_type`, plus `U002` / `U003` undo scripts |
+| `migrations/` | `B001` baseline (tables plus seed data), `V002` orders and `recent_orders`, `V003` `category_type`, plus `U002` / `U003` undo scripts |
 | `demo-samples/` | Ready-made dev changes to capture live in the demo (become V004). See [demo-samples/README.md](demo-samples/README.md). |
 | `demo-drift/` | Hand-made prod changes, plus a script that puts them into `demo_prod` so the drift report has something to show. See [demo-drift/README.md](demo-drift/README.md). |
 | `.github/workflows/prod-drift-reset.yml` | Nightly job that rebuilds `demo_prod` from `master` and puts the drift back |
@@ -26,6 +26,8 @@ A Flyway Enterprise project for demoing database DevOps on Databricks Unity Cata
 `B001` creates the baseline tables and fills them with a small Northwind-style data set: 3 regions, categories, shippers, suppliers, employees and customers, plus 4 products. Child rows look up their parents by name (for example a product joins to its supplier on `supplier_name`). Databricks identity columns don't guarantee which row gets which ID, so hard-coded `1, 2, 3` foreign keys aren't safe.
 
 `orders` is created in `V002`, so it has no seed rows yet, and `recent_orders` returns nothing.
+
+> V002 runs in every environment. If you ever run `flyway migrate` against dev, where `orders` already exists, mark V002 as applied rather than running it: `flyway migrate -environment=development -skipExecutingMigrations=true -target=002_20260812151537`.
 
 > Editing `B001` changes its checksum. Any environment that already ran `B001` as a script needs `flyway repair -environment=<env>` before it will migrate again. Prod doesn't, because `demo-drift` rebuilds it.
 

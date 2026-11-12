@@ -20,7 +20,7 @@ Drift is measured against a **Flyway snapshot**. The order matters:
 2. The drift scripts run **after** the snapshot.
 3. `flyway check -drift -environment=prod` compares prod with that snapshot and reports 01–05.
 
-Why not compare against a build from `shadow`? `V002` only runs when `${flyway:environment}==prod` (see its `.conf`), so a build in `shadow` would never have `orders` or `recent_orders`. They'd show up as false drift.
+There's another way to check drift: compare prod against a fresh build in `shadow` (`flyway check -drift -environment=prod -check.buildEnvironment=shadow`). Now that V002 runs everywhere, that works too and needs no snapshot. The snapshot approach is still the default here, because it's what Flyway recommends for production and it's what `migrate -saveSnapshot=true` keeps up to date.
 
 ## Set it up (once)
 
@@ -33,7 +33,7 @@ databricks auth login --host https://adb-7405611424302232.12.azuredatabricks.net
 
 You also need the Flyway CLI (Enterprise) on PATH. It uses the prod credentials already in your `flyway.user.toml`.
 
-The committed `prod` environment signs in through a browser, which can't work in CI. So on the runner only, the GitHub Action swaps `prod` to token sign-in against the same catalog, keeping the name `prod` so V002's `.conf` condition still matches. For that, add these repo secrets:
+The committed `prod` environment signs in through a browser, which can't work in CI. So on the runner only, the GitHub Action swaps `prod` to token sign-in against the same catalog. Your `flyway.toml` is unchanged. For that, add these repo secrets:
 
 | Secret | Value |
 |---|---|

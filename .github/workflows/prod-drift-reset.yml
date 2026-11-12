@@ -46,8 +46,8 @@ jobs:
           echo "$RUNNER_TEMP/flyway-$FLYWAY_VERSION" >> "$GITHUB_PATH"
 
       # The committed prod environment signs in through a browser (OAuth U2M), which can't work in CI.
-      # On the runner only, swap its connection for a PAT (AuthMech=3) against the same catalog. The environment
-      # keeps the name "prod" so V002's shouldExecute=${flyway:environment}==prod still runs it.
+      # On the runner only, swap its connection for a PAT (AuthMech=3) against the same catalog.
+      # Keeping the name "prod" means any per-environment config (placeholders, .conf files) still applies.
       - name: Token sign-in for prod (runner only)
         run: |
           python - <<'PY'
